@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/0216d67b62.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Oswald:wght@200;300;400&display=swap" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="https://emojigraph.org/media/emojidex/bento-box_1f371.png">
+    <title>위슐랭 가이드</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Noto Sans KR", sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url("http://www.cooknchefnews.com/news/data/20180115/p1065602411364753_853_thum.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+
+        }
+
+        ::selection {
+            background-color: #bf68cc;
+        }
+
+
+        /* .login */
+
+        body::before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .login_form {
+            position: relative;
+            z-index: 2;
+        }
+
+        .login_form a {
+            font-size: 30px;
+            margin-left: calc(50% - 90px);
+        }
+
+        .int_area {
+            width: 400px;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .int_area:first-child {
+            margin-top: 0;
+        }
+
+        .int_area input {
+            width: 100%;
+            padding: 20px 10px 10px;
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid #999;
+            font-size: 18px;
+            color: #fff;
+            outline: none;
+        }
+
+        .int_area label {
+            position: absolute;
+            left: 10px;
+            top: 15px;
+            font-size: 18px;
+            color: #999;
+            transition: all .5s ease;
+        }
+
+        .int_area label.warning {
+            color: red !important;
+            animation: warning .2s ease;
+            animation-iteration-count: 3;
+        }
+
+        @keyframes warning {
+            0% {
+                transform: translateX(-8px);
+            }
+            25% {
+                transform: translateX(8px);
+            }
+            50% {
+                transform: translateX(-8px);
+            }
+            75% {
+                transform: translateX(8px);
+            }
+
+        }
+
+        .int_area input:focus + label,
+        .int_area input:valid + label {
+            top: -2px;
+            font-size: 13px;
+            color: #166cda;
+        }
+
+
+        .btn_area {
+            margin-top: 30px;
+        }
+
+
+        .btn_area button {
+            width: 100%;
+            height: 50px;
+            background: #2272eb;
+            color: #fff;
+            font-size: 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .btn_area button:hover {
+            background-color: #1957c2;
+
+        }
+
+        .caption {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .regBtn {
+            font-size: 15px;
+            color: #999;
+            text-decoration: none;
+            background-color:transparent;
+            border: none;
+        }
+
+        a {
+            text-decoration: none; /* 링크의 밑줄 제거 */
+            color: inherit; /* 링크의 색상 제거 */
+        }
+    </style>
+
+</head>
+
+<body>
+ 
+    <!-- login -->
+
+
+    <section class="login_form">
+        <a href="index.html" style="color: white">회원 가입</a>
+        <form action="">
+            <div class="int_area">
+                <input type="text" name="id" id="id" autocomplete="off" required>
+                <label for="id">USER NAME</label>
+            </div>
+            <div class="int_area">
+                <input type="password" name="pw" id="pw" autocomplete="off" required>
+                <label for="pw">PASSWORD</label>
+            </div>
+            <div class="btn_area">
+                <button id="btn" type="submit">LOGIN</button>
+            </div>
+        </form>
+        <div class="caption">
+            <button type="submit" class="regBtn">가입하기</button>
+        </div>    
+    </section>
+
+    <!-- script -->
+    <script>
+        let id = $("#id");
+        let pw = $("#pw");
+        let btn = $("#btn");
+
+        $(btn).on('click', function(){
+            if($(id).val() == "") {
+                $(id).next('label').addClass('warning');
+                setTimeout(function(){
+                    $('label').removeClass('warning');
+                },1500)
+            }
+            else if($(pw).val() == "") {
+                $(pw).next('label').addClass('warning');
+                setTimeout(function(){
+                    $('label').removeClass('warning');
+                },1500)
+
+            }
+        });
+    </script>
+
+</body>
+</html>    
