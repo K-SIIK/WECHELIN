@@ -7,7 +7,9 @@
     <script src="https://kit.fontawesome.com/0216d67b62.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Oswald:wght@200;300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Oswald:wght@200;300;400&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="create.css">
     <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
     <link rel="shortcut icon" type="image/x-icon" href="https://emojigraph.org/media/emojidex/bento-box_1f371.png">
     <title>위슐랭 가이드</title>
@@ -28,20 +30,19 @@
             background-image: url("http://www.cooknchefnews.com/news/data/20180115/p1065602411364753_853_thum.jpg");
             background-repeat: no-repeat;
             background-size: cover;
-
         }
 
         ::selection {
-            background-color: #bf68cc;
+            background-color: rgba(255, 0, 0, 0.3);
         }
 
 
-        /* .login */
+        /* .create */
 
         body::before {
             content: "";
             position: absolute;
-            z-index: -1;
+            z-index: 1;
             top: 0;
             right: 0;
             bottom: 0;
@@ -49,13 +50,13 @@
             background-color: rgba(0, 0, 0, 0.7);
         }
 
-        .login_form {
+        .create_form {
             position: relative;
             z-index: 2;
         }
 
-        .login_form a {
-            font-size: 30px;
+        .create_form img {
+            width: 180px;
             margin-left: calc(50% - 90px);
         }
 
@@ -145,69 +146,59 @@
             text-align: center;
         }
 
-        .regBtn {
+        .caption a {
             font-size: 15px;
             color: #999;
             text-decoration: none;
-            background-color:transparent;
-            border: none;
-        }
-
-        a {
-            text-decoration: none; /* 링크의 밑줄 제거 */
-            color: inherit; /* 링크의 색상 제거 */
         }
     </style>
-
 </head>
-
 <body>
- 
-    <!-- login -->
+<!-- create -->
+<section class="create_form">
+    <a href="index.html"></a>
+    <form action="">
+        <div class="int_area">
+            <input type="text" name="id" id="id" autocomplete="off" required>
+            <label for="id">USER NAME</label>
+        </div>
+        <div class="int_area">
+            <input type="password" name="pw" id="pw" autocomplete="off" required>
+            <label for="pw">PASSWORD</label>
+        </div>
+        <div class="int_area">
+            <input type="password" name="pw" id="pw" autocomplete="off" required>
+            <label for="pw">PASSWORD AGAIN</label>
+        </div>
+        <div class="btn_area">
+            <button id="btn" type="submit">회원가입</button>
+        </div>
+    </form>
 
+</section>
 
-    <section class="login_form">
-        <a href="index.html" style="color: white">회원 가입</a>
-        <form action="">
-            <div class="int_area">
-                <input type="text" name="id" id="id" autocomplete="off" required>
-                <label for="id">USER NAME</label>
-            </div>
-            <div class="int_area">
-                <input type="password" name="pw" id="pw" autocomplete="off" required>
-                <label for="pw">PASSWORD</label>
-            </div>
-            <div class="btn_area">
-                <button id="btn" type="submit">LOGIN</button>
-            </div>
-        </form>
-        <div class="caption">
-            <button type="submit" class="regBtn">가입하기</button>
-        </div>    
-    </section>
+<!-- script -->
+<script>
+    let id = $("#id");
+    let pw = $("#pw");
+    let btn = $("#btn");
 
-    <!-- script -->
-    <script>
-        let id = $("#id");
-        let pw = $("#pw");
-        let btn = $("#btn");
+    $(btn).on('click', function () {
+        if ($(id).val() == "") {
+            $(id).next('label').addClass('warning');
+            setTimeout(function () {
+                $('label').removeClass('warning');
+            }, 1500)
+        } else if ($(pw).val() == "") {
+            $(pw).next('label').addClass('warning');
+            setTimeout(function () {
+                $('label').removeClass('warning');
+            }, 1500)
 
-        $(btn).on('click', function(){
-            if($(id).val() == "") {
-                $(id).next('label').addClass('warning');
-                setTimeout(function(){
-                    $('label').removeClass('warning');
-                },1500)
-            }
-            else if($(pw).val() == "") {
-                $(pw).next('label').addClass('warning');
-                setTimeout(function(){
-                    $('label').removeClass('warning');
-                },1500)
+        }
+    });
+</script>
 
-            }
-        });
-    </script>
 
 </body>
-</html>    
+</html>
