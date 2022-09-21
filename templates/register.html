@@ -151,54 +151,83 @@
             color: #999;
             text-decoration: none;
         }
+
+        .pageInfo {
+            font-size: 50px;
+            margin-left: calc(50% - 100px);
+            margin-bottom: 40px;
+            color:white;
+        }
     </style>
+
+
+    <!-- script -->
+    <script>
+        let id = $("#id");
+        let pw1 = $("#pw1");
+        let pw2 = $("#pw2");
+        let btn = $("#btn");
+
+        registNullAndSameChk();
+
+        function registNullAndSameChk() {
+            $(btn).on('click', function () {
+                if ($(id).val() == "") {
+                    $(id).next('label').addClass('warning');
+                    setTimeout(function () {
+                        $('label').removeClass('warning');
+                    }, 1500)
+                }
+                if ($(pw1).val() == "") {
+                    $(pw1).next('label').addClass('warning');
+                    setTimeout(function () {
+                        $('label').removeClass('warning');
+                    }, 1500)
+                }
+
+                if ($(pw2).val() == "") {
+                    $(pw2).next('label').addClass('warning');
+                    setTimeout(function () {
+                        $('label').removeClass('warning');
+                    }, 1500)
+                }
+
+                // pw1과 pw2가 같은지
+                registSamePW();
+
+            });
+        }
+
+        function registSamePW() {
+            // if(!Object.is(pw1, pw2)) {
+            //
+            // }
+        }
+    </script>
+
 </head>
 <body>
+
 <!-- create -->
 <section class="create_form">
-    <a href="index.html"></a>
-    <form action="">
+    <p href="index.html" class="pageInfo"style="color: white">회원 가입</p>
+    <form action="/register" method="post">
         <div class="int_area">
             <input type="text" name="id" id="id" autocomplete="off" required>
-            <label for="id">USER NAME</label>
+            <label for="id">USER ID</label>
         </div>
         <div class="int_area">
-            <input type="password" name="pw" id="pw" autocomplete="off" required>
-            <label for="pw">PASSWORD</label>
+            <input type="password" name="pw1" id="pw1" autocomplete="off" required>
+            <label for="pw1">PASSWORD INPUT</label>
         </div>
         <div class="int_area">
-            <input type="password" name="pw" id="pw" autocomplete="off" required>
-            <label for="pw">PASSWORD AGAIN</label>
+            <input type="password" name="pw2" id="pw2" autocomplete="off" required>
+            <label for="pw2">PASSWORD AGAIN</label>
         </div>
         <div class="btn_area">
             <button id="btn" type="submit">회원가입</button>
         </div>
     </form>
-
 </section>
-
-<!-- script -->
-<script>
-    let id = $("#id");
-    let pw = $("#pw");
-    let btn = $("#btn");
-
-    $(btn).on('click', function () {
-        if ($(id).val() == "") {
-            $(id).next('label').addClass('warning');
-            setTimeout(function () {
-                $('label').removeClass('warning');
-            }, 1500)
-        } else if ($(pw).val() == "") {
-            $(pw).next('label').addClass('warning');
-            setTimeout(function () {
-                $('label').removeClass('warning');
-            }, 1500)
-
-        }
-    });
-</script>
-
-
 </body>
 </html>

@@ -1,5 +1,9 @@
-from flask import Flask, render_template, request, jsonify, redirect
+import hashlib
+
+import jwt
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 import requests
+import datetime
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
 
@@ -8,19 +12,73 @@ db = client.dbsparta
 
 app = Flask(__name__)
 
+# JWT 토큰 암호화에 사용될 비밀키
+SECRET_KEY = 'WECHELIN'
+
 
 @app.route('/')
 def home():
-    restaurant_list = list(db.michelin.find({}, {'_id': False}))
+    token_receive = request.cookies.get('mtoken')
+
+    print('GET / \t\t\t> ', token_receive)
+    # 로그인 할 경우
+    # if token_receive is not None:
+    #     try:
+    #         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    #         # print(payload['id'])
+    #     except jwt.ExpiredSignatureError:
+    #         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+    #     except jwt.exceptions.DecodeError:
+    #         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
+    restaurant_list = list(db.michelin.find({}, {'_id': False}).sort('star', -1))
+
+    # print(restaurant_list)
+
     return render_template('index.html', restaurant_list=restaurant_list)
 
 @app.route('/login', methods=['GET'])
 def getLogin():
     return render_template('login.html')
 
+@app.route('/login', methods=['POST'])
+def postLogin():
+    id = request.form['id']
+    pw = request.form['pw']
+
+    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+
+    findUser = db.user.find_one({'id': id, 'pw': pw_hash})
+
+    if findUser == None:
+        return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
+
+    payload = {
+        'id': id,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=60 * 30)
+    }
+    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
+
+    print('POST /login \t> ', token)
+
+    return jsonify({'result': 'success', 'token': token})
+
 @app.route('/register', methods=['GET'])
 def getRegister():
     return render_template('register.html')
+
+@app.route('/register', methods=['POST'])
+def postRegister():
+    # db.user.drop()
+
+    id = request.form['id']
+    pw = request.form['pw1']
+
+    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+
+    db.user.insert_one({'id': id, 'pw': pw_hash})
+
+    return redirect('/login')
 
 @app.route('/<int:reviewId>', methods=["GET"])
 def getOnerestaurant(reviewId):
@@ -30,6 +88,7 @@ def getOnerestaurant(reviewId):
         {'reviewId':reviewId},
         {'_id': False}
     ))
+
     return jsonify({'review': review})
 
 @app.route('/test')
@@ -40,8 +99,6 @@ def test():
 def getAllrestaurant():
     restaurant_list = list(db.michelin.find({}, {'_id': False}))
     return jsonify({'restaurant_list': restaurant_list})
-
-
 
 # @app.route('/remove')
 # def tes1t():

@@ -9,6 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Oswald:wght@200;300;400&display=swap" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <!-- $.cookie 를 사용하려면 아래 링크가 추가 되어야 함 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
     <link rel="shortcut icon" type="image/x-icon" href="https://emojigraph.org/media/emojidex/bento-box_1f371.png">
     <title>위슐랭 가이드</title>
 
@@ -149,32 +153,17 @@
             color: #999;
             text-decoration: none;
         }
+
+        .pageInfo {
+            font-size: 50px;
+            margin-left: calc(50% - 100px);
+            margin-bottom: 40px;
+            color: white;
+        }
+
+
     </style>
 
-</head>
-
-<body>
- 
-    <!-- login -->
-    
-    <section class="login_form">
-        <form action="">
-            <div class="int_area">
-                <input type="text" name="id" id="id" autocomplete="off" required>
-                <label for="id">USER NAME</label>
-            </div>
-            <div class="int_area">
-                <input type="password" name="pw" id="pw" autocomplete="off" required>
-                <label for="pw">PASSWORD</label>
-            </div>
-            <div class="btn_area">
-                <button id="btn" type="submit">LOGIN</button>
-            </div>
-        </form>
-        <div class="caption">
-            <a href="/register">회원가입</a>
-        </div>    
-    </section>
 
     <!-- script -->
     <script>
@@ -182,22 +171,62 @@
         let pw = $("#pw");
         let btn = $("#btn");
 
-        $(btn).on('click', function(){
-            if($(id).val() == "") {
+        $(btn).on('click', function () {
+            if ($(id).val() == "") {
                 $(id).next('label').addClass('warning');
-                setTimeout(function(){
+                setTimeout(function () {
                     $('label').removeClass('warning');
-                },1500)
-            }
-            else if($(pw).val() == "") {
+                }, 1500)
+            } else if ($(pw).val() == "") {
                 $(pw).next('label').addClass('warning');
-                setTimeout(function(){
+                setTimeout(function () {
                     $('label').removeClass('warning');
-                },1500)
-
+                }, 1500)
             }
         });
+
+        function login() {
+            $.ajax({
+                type: "POST",
+                url: "/login",
+                data: {id: $('#id').val(), pw: $('#pw').val()},
+                success: function (response) {
+                    if (response['result'] == 'fail') {
+                        alert(response['msg']);
+                        return;
+                    }
+                    alert('로그인이 완료되었습니다.!');
+
+                    $.cookie('mtoken', response['token']);
+
+                    window.location.href = '/'
+                }
+            })
+        }
     </script>
+
+</head>
+
+<body>
+ 
+    <!-- login -->
+    <section class="login_form">
+        <p href="index.html" class="pageInfo">로그인</p>
+        <div class="int_area">
+            <input type="text" name="id" id="id" autocomplete="off" required>
+            <label for="id">USER NAME</label>
+        </div>
+        <div class="int_area">
+            <input type="password" name="pw" id="pw" autocomplete="off" required>
+            <label for="pw">PASSWORD</label>
+        </div>
+        <div class="btn_area">
+            <button id="btn" onclick="login()">LOGIN</button>
+        </div>
+        <div class="caption">
+            <a href="/register">회원가입</a>
+        </div>
+    </section>
 
 </body>
 </html>    
