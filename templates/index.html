@@ -21,8 +21,12 @@
 
         }
 
-        .header > a {
+        .header > a, p {
             color: white;
+        }
+
+        .header > p {
+            margin: 0px;
         }
 
 
@@ -64,7 +68,6 @@
             padding: 0 80px;
         }
 
-
     </style>
 
 </head>
@@ -73,13 +76,16 @@
         <img src="https://guide.michelin.com/assets/images/michelin-guide-logo-white.svg" width="237" height="42">
         <a href="/">미슐랭 오피셜</a>
         <a href="#">나만의 미슐랭</a>
-        {% if userId %}
-        <a>{{ userId }}님 환영합니다</a>
-        <a href="#">마이 페이지</a>
-        <a href="#">로그아웃</a>
+
+        {% if userId == "비회원" %}
+            <p >비회원 님 환영합니다</p>
+            <a href="/login">로그인</a>
+            <a href="/register">회원가입</a>
         {% else %}
-        <a href="/login">로그인</a>
-        <a href="/register">회원가입</a>
+            {#  마이페이지 / 로그아웃 미구현  #}
+            <p>{{userId}} 님 환영합니다</p>
+            <a href="/mypage">마이페이지</a>
+            <a href="/logout">로그아웃</a>
         {% endif %}
     </div>
 
