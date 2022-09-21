@@ -64,13 +64,12 @@
             padding: 0 80px;
         }
 
-        .login > a {
-            color: white;
-        }
 
     </style>
+
 </head>
 <body>
+<<<<<<< HEAD
 {#    {% block content %}#}
 {#    <div class="header">#}
 {#        <img src="https://guide.michelin.com/assets/images/michelin-guide-logo-white.svg" width="237" height="42">#}
@@ -93,10 +92,27 @@
     <a href="/login">로그인</a>
     <a href="/register">회원가입</a>
 </div>
+=======
+{% block content %}
+    <div class="header">
+        <img src="https://guide.michelin.com/assets/images/michelin-guide-logo-white.svg" width="237" height="42">
+        <a href="/">미슐랭 오피셜</a>
+        <a href="#">나만의 미슐랭</a>
+        {% if ['userId'] %}
+        <a>{{ userId }}님 환영합니다</a>
+        <a href="#">마이 페이지</a>
+        <a href="#">로그아웃</a>
+        {% else %}
+        <a href="/login">로그인</a>
+        <a href="/register">회원가입</a>
+        {% endif %}
+    </div>
+{% endblock %}
+
+>>>>>>> plus
 <div class="image">
     <img src="https://d3h1lg3ksw6i6b.cloudfront.net/media/image/2020/08/13/0f23fe1f30c14d46a0ffabcc447c4322_1.+%EB%9D%BC%EC%97%B0_+%EB%AF%BC%EC%96%B4+%EC%96%B4%EB%9E%80%ED%83%95.jpg">
 </div>
-
 
 <div id="restaurant-list" class="row row-cols-1 row-cols-md-4">
     {% for restaurant in restaurant_list %}

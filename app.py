@@ -19,23 +19,26 @@ SECRET_KEY = 'WECHELIN'
 @app.route('/')
 def home():
     token_receive = request.cookies.get('mtoken')
-
     print('GET / \t\t\t> ', token_receive)
-    # 로그인 할 경우
-    # if token_receive is not None:
-    #     try:
-    #         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    #         # print(payload['id'])
-    #     except jwt.ExpiredSignatureError:
-    #         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
-    #     except jwt.exceptions.DecodeError:
-    #         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
     restaurant_list = list(db.michelin.find({}, {'_id': False}).sort('star', -1))
-
     # print(restaurant_list)
 
-    return render_template('index.html', restaurant_list=restaurant_list)
+    userId = "비회원"
+
+    if (token_receive is not None):
+        try:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.user.find_one({"id": payload["id"]})
+
+            userId = user_info['id']
+            # print(user_info['id'])
+            return render_template('index.html', restaurant_list=restaurant_list, userId=userId)
+        except jwt.ExpiredSignatureError:
+            return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+        except jwt.exceptions.DecodeError:
+            return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+    return render_template('index.html', restaurant_list=restaurant_list, userId=userId)
 
 @app.route('/login', methods=['GET'])
 def getLogin():
@@ -91,7 +94,7 @@ def postRegister():
         "profile_pic_real": "profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
         "profile_info": ""  # 프로필 한 마디
     }
-    db.users.insert_one(doc)
+    db.user.insert_one(doc)
 
     return jsonify({'result': 'success'})
     # return redirect('/login')
