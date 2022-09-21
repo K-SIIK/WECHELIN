@@ -158,50 +158,102 @@
             margin-bottom: 40px;
             color:white;
         }
+
+        #dupBtn {
+            background-color: gray;
+        }
+
     </style>
 
 
     <!-- script -->
     <script>
-        let id = $("#id");
-        let pw1 = $("#pw1");
-        let pw2 = $("#pw2");
-        let btn = $("#btn");
 
-        registNullAndSameChk();
+        // ID 중복 확인
+        function chkDupId() {
+            let id = $("#id").val()
 
-        function registNullAndSameChk() {
-            $(btn).on('click', function () {
-                if ($(id).val() == "") {
-                    $(id).next('label').addClass('warning');
-                    setTimeout(function () {
-                        $('label').removeClass('warning');
-                    }, 1500)
+            if (id == "") {
+                alert("id를 입력해주세요");
+                $("#id").focus()
+                return;
+            }
+            if (!ChkCurId(id)) {
+                alert("아이디의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 4-10자 길이");
+                $("#id").focus()
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/register/chkDup",
+                data: {
+                    id: id
+                },
+                success: function (response) {
+                    if (response["isExist"]) {
+                        alert('동일 id가 존재합니다.')
+                        $("#input-username").focus()
+                        return;
+                    }
+                    alert('사용 가능한 id입니다.');
                 }
-                if ($(pw1).val() == "") {
-                    $(pw1).next('label').addClass('warning');
-                    setTimeout(function () {
-                        $('label').removeClass('warning');
-                    }, 1500)
-                }
-
-                if ($(pw2).val() == "") {
-                    $(pw2).next('label').addClass('warning');
-                    setTimeout(function () {
-                        $('label').removeClass('warning');
-                    }, 1500)
-                }
-
-                // pw1과 pw2가 같은지
-                registSamePW();
-
             });
         }
 
-        function registSamePW() {
-            // if(!Object.is(pw1, pw2)) {
-            //
-            // }
+        function ChkCurId(asValue) {
+            var regExp = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{4,10}$/;
+            return regExp.test(asValue);
+        }
+
+        function ChkCurPw(asValue) {
+            var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;
+            return regExp.test(asValue);
+        }
+
+        function regist() {
+            let id = $("#id").val()
+            let pw1 = $("#pw1").val()
+            let pw2 = $("#pw2").val()
+
+            // pw1 검사
+            if (pw1 == "") {
+                alert("비밀번호를 입력해주세요.")
+                $("#pw1").focus()
+                return;
+            } else if (!ChkCurPw(pw1)) {
+                alert("비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용가능 8-20자");
+                $("#pw1").focus()
+                return;
+            } else {
+                // alert("사용할 수 있는 비밀번호입니다.");
+            }
+
+            // pw2 검사
+            if (pw2 == "") {
+                alert("비밀번호를 입력해주세요.")
+                $("#pw2").focus()
+                return;
+            } else if (pw1 != pw2) {
+                alert("비밀번호가 일치하지 않습니다.");
+                $("#pw2").focus()
+                return;
+            } else {
+                // alert("비밀번호가 일치합니다.");
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/register",
+                data: {
+                    id: id,
+                    pw1: pw1
+                },
+                success: function (response) {
+                    alert("회원가입이 완료되었습니다.")
+                    window.location.replace("/login")
+                }
+            });
         }
     </script>
 
@@ -210,24 +262,26 @@
 
 <!-- create -->
 <section class="create_form">
-    <p href="index.html" class="pageInfo"style="color: white">회원 가입</p>
-    <form action="/register" method="post">
-        <div class="int_area">
-            <input type="text" name="id" id="id" autocomplete="off" required>
-            <label for="id">USER ID</label>
-        </div>
-        <div class="int_area">
-            <input type="password" name="pw1" id="pw1" autocomplete="off" required>
-            <label for="pw1">PASSWORD INPUT</label>
-        </div>
-        <div class="int_area">
-            <input type="password" name="pw2" id="pw2" autocomplete="off" required>
-            <label for="pw2">PASSWORD AGAIN</label>
-        </div>
-        <div class="btn_area">
-            <button id="btn" type="submit">회원가입</button>
-        </div>
-    </form>
+    <p href="index.html" class="pageInfo" style="color: white">회원 가입</p>
+    <div class="int_area">
+        <input type="text" name="id" id="id" autocomplete="off" required>
+        <label for="id">USER ID</label>
+    </div>
+    <div class="btn_area">
+        <button id="dupBtn" onclick="chkDupId()">중복확인</button>
+    </div>
+
+    <div class="int_area">
+        <input type="password" name="pw1" id="pw1" autocomplete="off" required>
+        <label for="pw1">PASSWORD INPUT</label>
+    </div>
+    <div class="int_area">
+        <input type="password" name="pw2" id="pw2" autocomplete="off" required>
+        <label for="pw2">PASSWORD AGAIN</label>
+    </div>
+    <div class="btn_area">
+        <button id="btn" onclick="regist()">회원가입</button>
+    </div>
 </section>
 </body>
 </html>
