@@ -128,5 +128,43 @@ def getAllrestaurant():
 def getDetail():
     return render_template('detail.html')
 
+@app.route('/<int:reviewId>/post', methods=['POST'])
+def postComment(reviewId):
+    comment = requests.form["id"]
+
+    doc = {
+        'reviewId': reviewId,
+        'id': payload['id'],
+        'comment': comment
+    }
+    db.comment.insert_one(doc)
+    return jsonify({'msg': 'posted!'})
+
+
+@app.route('/<int:reviewId>/show', methods=['GET'])
+def showComment(reviewId):
+    comment_list = list(db.comment.find({'reviewId': reviewId}, {'_id': False}))
+    return jsonify({'comment_list': comment_list})
+
+
+@app.route('/<int:reviewId>/delete', methods=['DELETE'])
+def deleteComment(reviewId):
+    # num : 댓글 번호
+    num_recieve = int(requests.form['num_give'])
+    db.comment.delete_one({'reviewId': reviewId, 'num': num_recieve})
+    return jsonify({'msg': '삭제 완료'})
+
+
+# @app.route('/<int:reviewId>/edited', methods=['POST'])
+# def editedComment(reviewId):
+
+
+
+@app.route('/<int:reviewId>/edit', methods=['GET'])
+def editComment(reviewId):
+    num_recieve = int(requests.form['num_give'])
+    editData = db.comment.find_one({'reviewId': reviewId, 'num': num_recieve})
+    return jsonify({'editData': editData})
+
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
