@@ -33,17 +33,6 @@
             margin-bottom: 50px;
         }
 
-        .card {
-            margin: auto;
-            width: 300px;
-            box-shadow: 1px 1px 1px #d9cfcf;
-
-        }
-
-        .card:hover {
-            box-shadow: 3px 3px 3px 3px #d9cfcf;
-        }
-
         .card-text span {
             color: gray;
         }
@@ -52,17 +41,10 @@
             height: 300px;
         }
 
-        .card-text {
-            font-size: 12px;
-        }
-
         .card-text span {
             font-size: 18px;
         }
 
-        #restaurant-list {
-            padding: 0 80px;
-        }
 
 
     </style>
@@ -83,11 +65,12 @@
         {% endif %}
     </div>
 
-<div class="image">
-    <img src="https://d3h1lg3ksw6i6b.cloudfront.net/media/image/2020/08/13/0f23fe1f30c14d46a0ffabcc447c4322_1.+%EB%9D%BC%EC%97%B0_+%EB%AF%BC%EC%96%B4+%EC%96%B4%EB%9E%80%ED%83%95.jpg">
-</div>
+    <div class="wrap">
+        이 부분에 해당 식당 대표 이미지<br/> 식당명<br/> 식당 등급(별)<br/> 음식 카테고리
 
-<div id="restaurant-list" class="row row-cols-1 row-cols-md-4">
+    </div>
+
+    <div id="restaurant-list" class="row row-cols-1 row-cols-md-4">
     {% for restaurant in restaurant_list %}
     <div class="col mb-4">
         <div class="card">
@@ -105,53 +88,7 @@
     </div>
 
     {% endfor %}
-    <!-- Sample Data -->
-    <!--
-    <div class="col mb-4">
-        <div class="card">
-            <img src="https://axwwgrkdco.cloudimg.io/v7/__gmpics__/59fd3d76e7a144dab4e993c966fe05bf?width=500&sharp=1"
-                 class="card-img-top" alt="...">
-            <div class="card-body">
-                <p class="card-text"><span>별 개수</span></p>
-                <h5 class="card-title">식당 이름</h5>
-                <p class="card-text">음식 종류</p>
-            </div>
-        </div>
-    </div>
-    <div class="col mb-4">
-        <div class="card">
-            <img src="https://axwwgrkdco.cloudimg.io/v7/__gmpics__/59fd3d76e7a144dab4e993c966fe05bf?width=500&sharp=1"
-                 class="card-img-top" alt="...">
-            <div class="card-body">
-                <p class="card-text"><span>별 개수</span></p>
-                <h5 class="card-title">식당 이름</h5>
-                <p class="card-text">음식 종류</p>
-            </div>
-        </div>
-    </div>
-    <div class="col mb-4">
-        <div class="card">
-            <img src="https://axwwgrkdco.cloudimg.io/v7/__gmpics__/59fd3d76e7a144dab4e993c966fe05bf?width=500&sharp=1"
-                 class="card-img-top" alt="...">
-            <div class="card-body">
-                <p class="card-text"><span>별 개수</span></p>
-                <h5 class="card-title">식당 이름</h5>
-                <p class="card-text">음식 종류</p>
-            </div>
-        </div>
-    </div>
-    <div class="col mb-4">
-        <div class="card">
-            <img src="https://axwwgrkdco.cloudimg.io/v7/__gmpics__/59fd3d76e7a144dab4e993c966fe05bf?width=500&sharp=1"
-                 class="card-img-top" alt="...">
-            <div class="card-body">
-                <p class="card-text"><span>별 개수</span></p>
-                <h5 class="card-title">식당 이름</h5>
-                <p class="card-text">음식 종류</p>
-            </div>
-        </div>
-    </div>
-    -->
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
