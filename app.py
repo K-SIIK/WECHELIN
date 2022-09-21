@@ -67,6 +67,14 @@ def postLogin():
 def getRegister():
     return render_template('register.html')
 
+
+@app.route('/register/chkDup', methods=['POST'])
+def chkDupId():
+    id = request.form['id']
+    isExist = bool(db.user.find_one({"id": id}))
+
+    return jsonify({'result': 'success', 'isExist': isExist})
+
 @app.route('/register', methods=['POST'])
 def postRegister():
     # db.user.drop()
@@ -76,9 +84,17 @@ def postRegister():
 
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
-    db.user.insert_one({'id': id, 'pw': pw_hash})
+    doc = {
+        "id": id,  # 아이디
+        "pw": pw_hash,  # 비밀번호
+        "profile_pic": "",  # 프로필 사진 파일 이름
+        "profile_pic_real": "profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
+        "profile_info": ""  # 프로필 한 마디
+    }
+    db.users.insert_one(doc)
 
-    return redirect('/login')
+    return jsonify({'result': 'success'})
+    # return redirect('/login')
 
 @app.route('/<int:reviewId>', methods=["GET"])
 def getOnerestaurant(reviewId):
@@ -104,7 +120,6 @@ def getAllrestaurant():
 # def tes1t():
 #     db.michelin.drop()
 #     return jsonify({'msg': 'remove success!'})
-
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
