@@ -40,9 +40,11 @@ def home():
             return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
     return render_template('index.html', restaurant_list=restaurant_list, userId=userId)
 
+
 @app.route('/login', methods=['GET'])
 def getLogin():
     return render_template('login.html')
+
 
 @app.route('/login', methods=['POST'])
 def postLogin():
@@ -66,6 +68,7 @@ def postLogin():
 
     return jsonify({'result': 'success', 'token': token})
 
+
 @app.route('/register', methods=['GET'])
 def getRegister():
     return render_template('register.html')
@@ -77,6 +80,7 @@ def chkDupId():
     isExist = bool(db.user.find_one({"id": id}))
 
     return jsonify({'result': 'success', 'isExist': isExist})
+
 
 @app.route('/register', methods=['POST'])
 def postRegister():
@@ -99,43 +103,36 @@ def postRegister():
     return jsonify({'result': 'success'})
     # return redirect('/login')
 
-@app.route('/<int:reviewId>', methods=["GET"])
-def getOnerestaurant(reviewId):
-    # print(type(reviewId), reviewId)
-
-    review = list(db.michelin.find(
-        {'reviewId':reviewId},
-        {'_id': False}
-    ))
-
-    return jsonify({'review': review})
 
 @app.route('/test')
 def test():
     return render_template('test.html')
+
 
 @app.route('/michelins', methods=['GET'])
 def getAllrestaurant():
     restaurant_list = list(db.michelin.find({}, {'_id': False}))
     return jsonify({'restaurant_list': restaurant_list})
 
+
 # @app.route('/remove')
 # def tes1t():
 #     db.michelin.drop()
 #     return jsonify({'msg': 'remove success!'})
 
-@app.route('/detail', methods=['GET'])
-def getDetail():
-    return render_template('detail.html')
+@app.route('/<int:reviewId>')
+def getDetail(reviewId):
+    detail = db.michelin.find_one({'reviewId': reviewId})
+    return render_template('detail.html', detail=detail)
+
 
 @app.route('/<int:reviewId>/post', methods=['POST'])
 def postComment(reviewId):
-    comment = requests.form["id"]
+    comment_recieve = request.form['comment_give']
 
     doc = {
         'reviewId': reviewId,
-        'id': payload['id'],
-        'comment': comment
+        'comment': comment_recieve
     }
     db.comment.insert_one(doc)
     return jsonify({'msg': 'posted!'})
@@ -159,12 +156,12 @@ def deleteComment(reviewId):
 # def editedComment(reviewId):
 
 
-
 @app.route('/<int:reviewId>/edit', methods=['GET'])
 def editComment(reviewId):
     num_recieve = int(requests.form['num_give'])
     editData = db.comment.find_one({'reviewId': reviewId, 'num': num_recieve})
     return jsonify({'editData': editData})
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)

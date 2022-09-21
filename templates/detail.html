@@ -45,33 +45,47 @@
             font-size: 18px;
         }
 
-        .wrap {
-            width: 1000px;
-            height: 800px;
-            background-color: yellow;
+        /*.wrap {*/
+        /*    width: 1000px;*/
+        /*    height: 800px;*/
+        /*    background-color: yellow;*/
+        /*    display: flex;*/
+        /*    flex-direction: column;*/
+        /*    justify-content: center;*/
+        /*    align-items: center;*/
+        /*    margin: auto;*/
+        /*    margin-top: 200px;*/
+        /*    margin-bottom: 200px;*/
+        /*}*/
+
+        /*.wrap > photo {*/
+        /*    margin-bottom: 50px;*/
+        /*}*/
+
+        /*.wrap > name {*/
+        /*    margin-bottom: 50px;*/
+        /*}*/
+
+        /*.wrap > star {*/
+        /*    margin-bottom: 50px;*/
+        /*}*/
+
+        /*.wrap > cate {*/
+        /*    margin-bottom: 50px;*/
+        /*}*/
+
+        .contents {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            flex-direction: row;
+            margin-top: 50px;
+        }
+
+        .card {
             margin: auto;
-            margin-top: 200px;
-            margin-bottom: 200px;
-        }
+            width: 500px;
 
-        .wrap > photo {
-            margin-bottom: 50px;
-        }
+            box-shadow: 1px 1px 1px #d9cfcf;
 
-        .wrap > name {
-            margin-bottom: 50px;
-        }
-
-        .wrap > star {
-            margin-bottom: 50px;
-        }
-
-        .wrap > cate {
-            margin-bottom: 50px;
         }
 
         .comment {
@@ -89,32 +103,78 @@
 
 </head>
 <body>
-    <div class="header">
-        <img src="https://guide.michelin.com/assets/images/michelin-guide-logo-white.svg" width="237" height="42">
-        <a href="/">미슐랭 오피셜</a>
-        <a href="#">나만의 미슐랭</a>
-        <a>{{ userId }}님 환영합니다</a>
-        {% if userId %}
+<div class="header">
+    <img src="https://guide.michelin.com/assets/images/michelin-guide-logo-white.svg" width="237" height="42">
+    <a href="/">미슐랭 오피셜</a>
+    <a href="#">나만의 미슐랭</a>
+    <a>{{ userId }}님 환영합니다</a>
+    {% if userId %}
         <a href="#">마이 페이지</a>
         <a href="#">로그아웃</a>
-        {% else %}
+    {% else %}
         <a href="/login">로그인</a>
         <a href="/register">회원가입</a>
-        {% endif %}
+    {% endif %}
+</div>
+
+<div class="contents">
+
+    <div class="card">
+        <img src="{{ detail['image'] }}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <p class="card-text"><span>{{ detail['star'] }}</span></p>
+            <h5 class="card-title">{{ detail['name'] }}</h5>
+            <p class="card-text">분류: {{ detail['type'] }}</p>
+        </div>
     </div>
 
-    <div class="wrap">
-        <div class="photo">이 부분에 해당 식당 대표 이미지</div>
-        <div class="name">식당명</div>
-        <div class="star">식당 등급(별)</div>
-        <div class="cate">음식 카테고리</div>
+
+    <div class="card" id="post">
+        <div class="form-floating">
+                        <textarea class="form-control" placeholder="Leave a comment here" id="comment"
+                                  style="height: 300px"></textarea>
+        </div>
+        <button id="post-button" onclick="save_comment({{ detail['reviewId'] }})" type="button"
+                class="btn btn-secondary">post
+        </button>
+    </div>
+    <div class="con" id="comment-list">
+        <div class="card">
+            <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                    <p>I LOVE YOU!!!</p>
+                    <footer class="blockquote-footer">RYAN</footer>
+                </blockquote>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                    <p>FIGHTING!</p>
+                    <footer class="blockquote-footer">NEO</footer>
+                </blockquote>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                    <p>MARRY ME~~~</p>
+                    <footer class="blockquote-footer">APEACH</footer>
+                </blockquote>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                    <p>cool!</p>
+                    <footer class="blockquote-footer">PRODO</footer>
+                </blockquote>
+            </div>
+        </div>
     </div>
 
-    <div class="comment">
-        여기서 부터 댓글란
-    </div>
 
-
+</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -128,5 +188,28 @@
         crossorigin="anonymous"></script>
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 
+<script>
+
+
+    function save_comment(reviewId) {
+        let comment = $('#comment').val()
+        $.ajax({
+            type: 'POST',
+            url: "/" + reviewId + "/post",
+            data: {'comment_give': comment},
+            success: function (response) {
+                alert('hi')
+                console.log(response)
+            }
+        })
+    }
+
+</script>
+
 </body>
 </html>
+{##}
+{#2 성공#}
+{#3 리다이렉트#}
+{#4 클라이언트#}
+{#5 서버#}
