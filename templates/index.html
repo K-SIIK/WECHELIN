@@ -48,10 +48,6 @@
             box-shadow: 3px 3px 3px 3px #d9cfcf;
         }
 
-        .card-text span {
-            color: gray;
-        }
-
         header {
             height: 300px;
         }
@@ -62,6 +58,7 @@
 
         .card-text span {
             font-size: 18px;
+            color: gray;
         }
 
         #restaurant-list {
@@ -76,7 +73,6 @@
         <img src="https://guide.michelin.com/assets/images/michelin-guide-logo-white.svg" width="237" height="42">
         <a href="/">미슐랭 오피셜</a>
         <a href="#">나만의 미슐랭</a>
-
         {% if userId == "비회원" %}
             <p >비회원 님 환영합니다</p>
             <a href="/login">로그인</a>
@@ -105,7 +101,7 @@
                 <a href="/{{restaurant['reviewId']}}">
                     <h5 class="card-title">{{restaurant['name']}}</h5>
                 </a>
-                <p class="card-text">분류: {{restaurant['type']}}</p>
+                <p class="card-text"><span>분류: {{restaurant['type']}}</span></p>
             </div>
         </div>
     </div>
