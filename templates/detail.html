@@ -45,6 +45,15 @@
             font-size: 18px;
         }
 
+        .wrap {
+            width: 1000px;
+            height: 500px;
+            background-color: green;
+            margin: auto;
+            margin-top: 200px;
+            margin-bottom: 200px;
+        }
+
 
 
     </style>
@@ -55,8 +64,8 @@
         <img src="https://guide.michelin.com/assets/images/michelin-guide-logo-white.svg" width="237" height="42">
         <a href="/">미슐랭 오피셜</a>
         <a href="#">나만의 미슐랭</a>
-        {% if userId %}
         <a>{{ userId }}님 환영합니다</a>
+        {% if userId %}
         <a href="#">마이 페이지</a>
         <a href="#">로그아웃</a>
         {% else %}
@@ -67,27 +76,8 @@
 
     <div class="wrap">
         이 부분에 해당 식당 대표 이미지<br/> 식당명<br/> 식당 등급(별)<br/> 음식 카테고리
-
     </div>
 
-    <div id="restaurant-list" class="row row-cols-1 row-cols-md-4">
-    {% for restaurant in restaurant_list %}
-    <div class="col mb-4">
-        <div class="card">
-            <a href="/{{restaurant['reviewId']}}">
-                <img src="{{restaurant['image']}}" class="card-img-top" alt="...">
-            </a>
-            <div class="card-body">
-                <p class="card-text"><span>{{restaurant['star']}}</span></p>
-                <a href="/{{restaurant['reviewId']}}">
-                    <h5 class="card-title">{{restaurant['name']}}</h5>
-                </a>
-                <p class="card-text">분류: {{restaurant['type']}}</p>
-            </div>
-        </div>
-    </div>
-
-    {% endfor %}
 
 </div>
 
