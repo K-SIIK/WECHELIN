@@ -12,9 +12,6 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     restaurant_list = list(db.michelin.find({}, {'_id': False}))
-
-    print(restaurant_list)
-
     return render_template('index.html', restaurant_list=restaurant_list)
 
 @app.route('/login', methods=['GET'])
@@ -43,6 +40,8 @@ def test():
 def getAllrestaurant():
     restaurant_list = list(db.michelin.find({}, {'_id': False}))
     return jsonify({'restaurant_list': restaurant_list})
+
+
 
 # @app.route('/remove')
 # def tes1t():

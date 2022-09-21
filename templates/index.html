@@ -10,6 +10,11 @@
     <title>위슐랭 가이드</title>
 
     <style>
+
+        body {
+            overflow-x: hidden;
+        }
+
         .header {
             background-color: #bd2333;
             width: 100%;
@@ -18,7 +23,6 @@
             flex-direction: row;
             align-items: center;
             justify-content: space-evenly;
-
         }
 
         .header > a {
@@ -70,8 +74,12 @@
     <img src="https://guide.michelin.com/assets/images/michelin-guide-logo-white.svg" width="237" height="42">
     <a href="/">미슐랭 오피셜</a>
     <a href="#">나만의 미슐랭</a>
-    <a href="/login">로그인</a>
-    <a href="/register">회원가입</a>
+    <div class="login">
+        <a href="/login">로그인</a>
+        <span>|</span>
+        <a href="/register">회원가입</a>
+    </div>
+
 </div>
 <div class="image">
     <img src="https://d3h1lg3ksw6i6b.cloudfront.net/media/image/2020/08/13/0f23fe1f30c14d46a0ffabcc447c4322_1.+%EB%9D%BC%EC%97%B0_+%EB%AF%BC%EC%96%B4+%EC%96%B4%EB%9E%80%ED%83%95.jpg">
