@@ -47,13 +47,42 @@
 
         .wrap {
             width: 1000px;
-            height: 500px;
-            background-color: green;
+            height: 800px;
+            background-color: yellow;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             margin: auto;
             margin-top: 200px;
             margin-bottom: 200px;
         }
 
+        .wrap > photo {
+            margin-bottom: 50px;
+        }
+
+        .wrap > name {
+            margin-bottom: 50px;
+        }
+
+        .wrap > star {
+            margin-bottom: 50px;
+        }
+
+        .wrap > cate {
+            margin-bottom: 50px;
+        }
+
+        .comment {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+            margin-top: 200px;
+            margin-bottom: 200px;
+        }
 
 
     </style>
@@ -75,7 +104,14 @@
     </div>
 
     <div class="wrap">
-        이 부분에 해당 식당 대표 이미지<br/> 식당명<br/> 식당 등급(별)<br/> 음식 카테고리
+        <div class="photo">이 부분에 해당 식당 대표 이미지</div>
+        <div class="name">식당명</div>
+        <div class="star">식당 등급(별)</div>
+        <div class="cate">음식 카테고리</div>
+    </div>
+
+    <div class="comment">
+        여기서 부터 댓글란
     </div>
 
 
