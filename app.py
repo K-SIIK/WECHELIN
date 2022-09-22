@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from pymongo import MongoClient
 
 client = MongoClient('mongodb+srv://test:sparta@cluster0.j6ve73r.mongodb.net/Cluster0?retryWrites=true&w=majority')
+# client = MongoClient('mongodb://test:test@localhost', 27017)
 db = client.dbsparta
 
 app = Flask(__name__)
