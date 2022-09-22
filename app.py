@@ -195,44 +195,59 @@ def getDetailComment(reviewId):
             return redirect(url_for('getLogin', msg='로그인 정보가 존재하지 않습니다.'))
     return render_template('detail.html', detail=detail, comment_list=comment_list, userId=userId)
 
-
 @app.route('/<int:reviewId>/post', methods=['POST'])
 def postComment(reviewId):
-    comment_recieve = request.form['comment_give']
+    token_receive = request.cookies.get('mtoken')
 
-    comment_list = list(db.comment.find({'reviewId': reviewId}))
-    cmtId = len(comment_list) + 1
+    if (token_receive is None):
+        return redirect(url_for("getLogin", msg="로그인 후 이용 가능합니다."))
 
-    token_recieve = request.cookies.get('mtoken')
-    paylode = jwt.decode(token_recieve, SECRET_KEY, algorithms=['HS256'])
-    user_info = db.user.find_one({'id': paylode['id']})
+    comment_receive = request.form['comment_give']
 
-    userId = user_info['id']
+    try:
+        paylode = jwt.decode(token_receive, SECRET_KEY)
+        user_info = db.user.find_one({'id': paylode['id']})
+        cmt = list(db.comment.find({}, {'_id': False}).sort('cmtId', -1).limit(1))
+        print(cmt[0]['cmtId'])
 
-    doc = {
-        'reviewId': reviewId,
-        'cmtId': cmtId,
-        'userId': userId,
-        'comment': comment_recieve,
-        'date': datetime.datetime.utcnow()
-    }
-    print(datetime.datetime.utcnow())
-    db.comment.insert_one(doc)
-    return jsonify({'msg': '등록이 완료되었습니다.'})
+        doc = {
+            'reviewId': reviewId,
+            'cmtId': cmt[0]['cmtId'] + 1,
+            'userId': user_info['id'],
+            'comment': comment_receive,
+            'date': datetime.datetime.utcnow()
+        }
+        db.comment.insert_one(doc)
+
+        return jsonify({'msg': '댓글 등록이 완료되었습니다.'})
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for('getLogin', msg='로그인 시간이 만료 되었습니다.'))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for('getLogin', msg='로그인 정보가 존재하지 않습니다.'))
 
 
 @app.route('/<int:reviewId>/delete/<int:cmtId>', methods=['DELETE'])
 def deleteComment(reviewId, cmtId):
-    # cmtId : 댓글 번호
-    db.comment.delete_one({'reviewId': reviewId, 'cmtId': cmtId})
+    token_receive = request.cookies.get('mtoken')
 
-    delete_info = list(db.comment.find({'reviewId': reviewId, 'cmtId': {'$gt': cmtId}}))
-    cnt = len(delete_info)
+    if (token_receive is None):
+        return redirect(url_for("getLogin", msg="로그인 후 이용 가능합니다."))
 
-    if cnt != 0:
-        for i in range(cmtId + 1, cmtId + cnt + 1):
-            db.comment.update_one({'reviewId': reviewId, "cmtId": i}, {'$set': {"cmtId": i - 1}})
-    return jsonify({'msg': '삭제가 완료 되었습니다.'})
+    try:
+        paylode = jwt.decode(token_receive, SECRET_KEY)
+        user_info = db.user.find_one({'id': paylode['id']})
+        comment_info = db.comment.find_one({'cmtId': cmtId})
+
+        if(user_info['id'] == comment_info['userId']):
+            db.comment.delete_one({'reviewId': reviewId, 'cmtId': cmtId})
+            return jsonify({'msg': '삭제가 완료되었습니다.'})
+        else:
+            return jsonify({'msg': '작성자가 아닙니다.'})
+
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for('getLogin', msg='로그인 시간이 만료 되었습니다.'))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for('getLogin', msg='로그인 정보가 존재하지 않습니다.'))
 
 
 @app.route('/<int:reviewId>/edit/<int:cmtId>', methods=['GET'])
