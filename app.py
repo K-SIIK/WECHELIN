@@ -3,7 +3,7 @@ import hashlib
 import jwt
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 import requests
-import datetime
+import datetime, time
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
 
@@ -47,6 +47,7 @@ def getLogin():
 
     msg = request.args.get('msg')
 
+    access = "로그인 후 이용 가능합니다."
     timeout = "로그인 시간이 만료되었습니다."
     noExisted = "로그인 정보가 존재하지 않습니다."
 
@@ -55,6 +56,8 @@ def getLogin():
             return render_template('login.html', status=True, w = 't')
         elif(noExisted == msg):
             return render_template('login.html', status=True, w = 'n')
+        elif(access == msg):
+            return render_template('login.html', status=True, w='a')
 
     return render_template('login.html', status=False)
 
@@ -97,8 +100,6 @@ def chkDupId():
 
 @app.route('/register', methods=['POST'])
 def postRegister():
-    # db.user.drop()
-
     id = request.form['id']
     pw = request.form['pw1']
 
@@ -133,8 +134,37 @@ def getAllrestaurant():
 #     db.michelin.drop()
 #     return jsonify({'msg': 'remove success!'})
 
+@app.route('/mypage', methods=['GET'])
+def getMypage():
+    return render_template('mypage.html')
+
+@app.route('/mypage/getComment', methods=['GET'])
+def getMyComment():
+    token_receive = request.cookies.get('mtoken')
+    # print('getMypage.token_receive > ', token_receive)
+    if (token_receive is not None):
+        try:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.user.find_one({"id": payload["id"]})
+
+            comments = list(db.comment.find({'userId': user_info['id']}, {'_id': False}))
+            print(comments)
+
+            return jsonify(status='success', comments=comments)
+        except jwt.ExpiredSignatureError:
+            return redirect(url_for("getLogin", msg="로그인 시간이 만료되었습니다."))
+        except jwt.exceptions.DecodeError:
+            return redirect(url_for("getLogin", msg="로그인 정보가 존재하지 않습니다."))
+
+    return jsonify(status='fail')
+
 @app.route('/<int:reviewId>')
 def getDetailComment(reviewId):
+    token_receive = request.cookies.get('mtoken')
+
+    if (token_receive is None):
+        return redirect(url_for("getLogin", msg="로그인 후 이용 가능합니다."))
+
     detail = db.michelin.find_one({'reviewId': reviewId})
     comment_list = list(db.comment.find({'reviewId': reviewId}, {'_id': False}))
 
@@ -174,10 +204,12 @@ def postComment(reviewId):
         'reviewId': reviewId,
         'cmtId': cmtId,
         'userId': userId,
-        'comment': comment_recieve
+        'comment': comment_recieve,
+        'date': datetime.datetime.utcnow()
     }
+    print(datetime.datetime.utcnow())
     db.comment.insert_one(doc)
-    return jsonify({'msg': 'posted!'})
+    return jsonify({'msg': '등록이 완료되었습니다.'})
 
 
 @app.route('/<int:reviewId>/delete/<int:cmtId>', methods=['DELETE'])
@@ -191,7 +223,7 @@ def deleteComment(reviewId, cmtId):
     if cnt != 0:
         for i in range(cmtId + 1, cmtId + cnt + 1):
             db.comment.update_one({'reviewId': reviewId, "cmtId": i}, {'$set': {"cmtId": i - 1}})
-    return jsonify({'msg': '삭제 완료'})
+    return jsonify({'msg': '삭제가 완료되었습니다.'})
 
 
 # @app.route('/<int:reviewId>/edited', methods=['POST'])
