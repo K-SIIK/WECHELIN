@@ -121,34 +121,41 @@ def getAllrestaurant():
 #     return jsonify({'msg': 'remove success!'})
 
 @app.route('/<int:reviewId>')
-def getDetail(reviewId):
+def getDetailComment(reviewId):
     detail = db.michelin.find_one({'reviewId': reviewId})
-    return render_template('detail.html', detail=detail)
+    comment_list = list(db.comment.find({'reviewId': reviewId}, {'_id': False}))
+
+    return render_template('detail.html', detail=detail, comment_list=comment_list)
 
 
 @app.route('/<int:reviewId>/post', methods=['POST'])
 def postComment(reviewId):
     comment_recieve = request.form['comment_give']
 
+    comment_list = list(db.comment.find({'reviewId': reviewId}))
+    cmtId = len(comment_list) + 1
+
     doc = {
         'reviewId': reviewId,
+        'cmtId': cmtId,
         'comment': comment_recieve
     }
     db.comment.insert_one(doc)
     return jsonify({'msg': 'posted!'})
 
 
-@app.route('/<int:reviewId>/show', methods=['GET'])
-def showComment(reviewId):
-    comment_list = list(db.comment.find({'reviewId': reviewId}, {'_id': False}))
-    return jsonify({'comment_list': comment_list})
+@app.route('/<int:reviewId>/delete/<int:cmtId>', methods=['DELETE'])
+def deleteComment(reviewId, cmtId):
+    # cmtId : 댓글 번호
+    db.comment.delete_one({'reviewId': reviewId, 'cmtId': cmtId})
 
+    delete_info = list(db.comment.find({'reviewId': reviewId, 'cmtId': {'&gt': cmtId}}))
+    cnt = len(delete_info)
 
-@app.route('/<int:reviewId>/delete', methods=['DELETE'])
-def deleteComment(reviewId):
-    # num : 댓글 번호
-    num_recieve = int(requests.form['num_give'])
-    db.comment.delete_one({'reviewId': reviewId, 'num': num_recieve})
+    if cnt != 0:
+        for i in range(cmtId + 1, cmtId + cnt + 1):
+            db.comment.update_one({'reviewId': reviewId, "cmtId": i}, {'&set': {"cmtId": i - 1}})
+
     return jsonify({'msg': '삭제 완료'})
 
 
