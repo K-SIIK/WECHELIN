@@ -189,6 +189,12 @@
             getComments()
         })
 
+        function logout() {
+            $.removeCookie('mtoken', {path: '/'});
+            alert('로그아웃 되었습니다.!')
+            window.location.href = "/login"
+        }
+
     </script>
 
 </head>
