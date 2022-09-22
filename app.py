@@ -35,15 +35,28 @@ def home():
             # print(user_info['id'])
             return render_template('index.html', restaurant_list=restaurant_list, userId=userId)
         except jwt.ExpiredSignatureError:
-            return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+            return redirect(url_for("getLogin", msg="로그인 시간이 만료되었습니다."))
         except jwt.exceptions.DecodeError:
-            return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+            return redirect(url_for("getLogin", msg="로그인 정보가 존재하지 않습니다."))
+
     return render_template('index.html', restaurant_list=restaurant_list, userId=userId)
 
 
 @app.route('/login', methods=['GET'])
 def getLogin():
-    return render_template('login.html')
+
+    msg = request.args.get('msg')
+
+    timeout = "로그인 시간이 만료되었습니다."
+    noExisted = "로그인 정보가 존재하지 않습니다."
+
+    if(msg != None):
+        if(timeout == msg):
+            return render_template('login.html', status=True, w = 't')
+        elif(noExisted == msg):
+            return render_template('login.html', status=True, w = 'n')
+
+    return render_template('login.html', status=False)
 
 
 @app.route('/login', methods=['POST'])
@@ -60,7 +73,7 @@ def postLogin():
 
     payload = {
         'id': id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=60 * 30)
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=60 * 60)
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
 
@@ -72,6 +85,7 @@ def postLogin():
 @app.route('/register', methods=['GET'])
 def getRegister():
     return render_template('register.html')
+
 
 
 @app.route('/register/chkDup', methods=['POST'])
