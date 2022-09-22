@@ -136,7 +136,18 @@ def getAllrestaurant():
 
 @app.route('/mypage', methods=['GET'])
 def getMypage():
-    return render_template('mypage.html')
+    token_receive = request.cookies.get('mtoken')
+    # print('getMypage.token_receive > ', token_receive)
+    if (token_receive is not None):
+        try:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.user.find_one({"id": payload["id"]})
+
+            return render_template('mypage.html', userId=user_info['id'])
+        except jwt.ExpiredSignatureError:
+            return redirect(url_for("getLogin"))
+        except jwt.exceptions.DecodeError:
+            return redirect(url_for("getLogin"))
 
 @app.route('/mypage/getComment', methods=['GET'])
 def getMyComment():
@@ -148,7 +159,7 @@ def getMyComment():
             user_info = db.user.find_one({"id": payload["id"]})
 
             comments = list(db.comment.find({'userId': user_info['id']}, {'_id': False}))
-            print(comments)
+            # print(comments)
 
             return jsonify(status='success', comments=comments)
         except jwt.ExpiredSignatureError:
