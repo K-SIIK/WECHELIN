@@ -50,15 +50,6 @@
 
         }
 
-        .comment {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin: auto;
-            margin-top: 200px;
-            margin-bottom: 200px;
-        }
 
 
     </style>
@@ -99,7 +90,7 @@
     <div class="card" id="post">
         <div class="form-floating">
                         <textarea class="form-control" placeholder="Leave a comment here" id="comment"
-                                  style="height: 300px"></textarea>
+                                  style="height: 100px; margin-bottom: 20px"></textarea>
         </div>
         <button id="post-button" onclick="save_comment({{ detail['reviewId'] }})" type="button"
                 class="btn btn-secondary">post
@@ -121,7 +112,7 @@
                         <button onclick="edit_comment({{ detail['reviewId'] }}, {{ comment['cmtId'] }})" type="button" id="edit">
                             ✂
                         </button>
-                        <button onclick="delete_comment({{ detail['reviewId'] }},{{ comment['cmtId'] }})" type="button"
+                        <button onclick="delete_comment({{ detail['reviewId'] }}, {{ comment['cmtId'] }})" type="button"
                                 id="delete">
                             ❌
                         </button>
@@ -178,7 +169,7 @@
     function edit_comment(reviewId, cmtId) {
         $.ajax({
             type: 'GET',
-            url: `/${reviewId}/delete/${cmtId}`,
+            url: `/${reviewId}/edit/${cmtId}`,
             data: {},
             success: function (response) {
                 alert('hi')

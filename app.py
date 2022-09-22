@@ -19,7 +19,6 @@ SECRET_KEY = 'WECHELIN'
 @app.route('/')
 def home():
     token_receive = request.cookies.get('mtoken')
-    print('GET / \t\t\t> ', token_receive)
 
     restaurant_list = list(db.michelin.find({}, {'_id': False}).sort('star', -1))
     # print(restaurant_list)
@@ -223,7 +222,7 @@ def deleteComment(reviewId, cmtId):
     if cnt != 0:
         for i in range(cmtId + 1, cmtId + cnt + 1):
             db.comment.update_one({'reviewId': reviewId, "cmtId": i}, {'$set': {"cmtId": i - 1}})
-    return jsonify({'msg': '삭제가 완료되었습니다.'})
+    return jsonify({'msg': '삭제가 완료 되었습니다.'})
 
 
 # @app.route('/<int:reviewId>/edited', methods=['POST'])
@@ -233,7 +232,7 @@ def deleteComment(reviewId, cmtId):
 @app.route('/<int:reviewId>/edit/<int:cmtId>', methods=['GET'])
 def editComment(reviewId, cmtId):
     editData = db.comment.find_one({'reviewId': reviewId, 'cmtId' : cmtId})
-    return jsonify({'editData': editData})
+    return jsonify(editData)
 
 
 if __name__ == '__main__':
