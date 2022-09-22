@@ -135,9 +135,16 @@ def postComment(reviewId):
     comment_list = list(db.comment.find({'reviewId': reviewId}))
     cmtId = len(comment_list) + 1
 
+    # token_recieve = request.cookies.get('mtoken')
+    # paylode = jwt.decode(token_recieve, SECRET_KEY, algorithms=['HS256'])
+    # user_info = db.user.find_one({'id': paylode['id']})
+
+    # userId = user_info['id']
+
     doc = {
         'reviewId': reviewId,
         'cmtId': cmtId,
+        'userId': userId,
         'comment': comment_recieve
     }
     db.comment.insert_one(doc)
