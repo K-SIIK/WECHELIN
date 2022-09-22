@@ -30,8 +30,9 @@
 
         }
 
-        .header > a, p {
+        .header link > p,a {
             color: white;
+            font-weight: bolder;
         }
 
 
@@ -63,6 +64,11 @@
             color: gray;
         }
 
+        .card-title span {
+            font-size: 22px;
+            color: gray;
+        }
+
         #restaurant-list {
             padding: 0 80px;
         }
@@ -90,12 +96,12 @@
             <p>비회원 님 환영합니다</p>
             <a href="/login">로그인</a>
             <a href="/register">회원가입</a>
-        {% else %}
+            {% else %}
             {#  마이페이지 / 로그아웃 미구현  #}
             <p>{{userId}} 님 환영합니다</p>
             <a href="/mypage">마이페이지</a>
             <a href="javascript:logout();">로그아웃</a>
-        {% endif %}
+            {% endif %}
         </div>
     </div>
 
@@ -113,7 +119,7 @@
             <div class="card-body">
                 <p class="card-text"><span>{{restaurant['star']}}</span></p>
                 <a href="/{{restaurant['reviewId']}}">
-                    <h5 class="card-title">{{restaurant['name']}}</h5>
+                    <h5 class="card-title"><span>{{restaurant['name']}}</span></h5>
                 </a>
                 <p class="card-text"><span>분류: {{restaurant['type']}}</span></p>
             </div>
