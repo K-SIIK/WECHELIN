@@ -47,6 +47,7 @@ def getLogin():
 
     msg = request.args.get('msg')
 
+    access = "로그인 후 이용 가능합니다."
     timeout = "로그인 시간이 만료되었습니다."
     noExisted = "로그인 정보가 존재하지 않습니다."
 
@@ -55,6 +56,8 @@ def getLogin():
             return render_template('login.html', status=True, w = 't')
         elif(noExisted == msg):
             return render_template('login.html', status=True, w = 'n')
+        elif(access == msg):
+            return render_template('login.html', status=True, w='a')
 
     return render_template('login.html', status=False)
 
@@ -97,8 +100,6 @@ def chkDupId():
 
 @app.route('/register', methods=['POST'])
 def postRegister():
-    # db.user.drop()
-
     id = request.form['id']
     pw = request.form['pw1']
 
@@ -140,8 +141,7 @@ def getMypage():
 @app.route('/mypage/getComment', methods=['GET'])
 def getMyComment():
     token_receive = request.cookies.get('mtoken')
-    print('getMypage.token_receive > ', token_receive)
-
+    # print('getMypage.token_receive > ', token_receive)
     if (token_receive is not None):
         try:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -156,11 +156,15 @@ def getMyComment():
         except jwt.exceptions.DecodeError:
             return redirect(url_for("getLogin", msg="로그인 정보가 존재하지 않습니다."))
 
-    print('is fail?')
     return jsonify(status='fail')
 
 @app.route('/<int:reviewId>')
 def getDetailComment(reviewId):
+    token_receive = request.cookies.get('mtoken')
+
+    if (token_receive is None):
+        return redirect(url_for("getLogin", msg="로그인 후 이용 가능합니다."))
+
     detail = db.michelin.find_one({'reviewId': reviewId})
     comment_list = list(db.comment.find({'reviewId': reviewId}, {'_id': False}))
 
@@ -189,7 +193,7 @@ def postComment(reviewId):
     }
     print(datetime.datetime.utcnow())
     db.comment.insert_one(doc)
-    return jsonify({'msg': 'posted!'})
+    return jsonify({'msg': '등록이 완료되었습니다.'})
 
 
 @app.route('/<int:reviewId>/delete/<int:cmtId>', methods=['DELETE'])
@@ -204,7 +208,7 @@ def deleteComment(reviewId, cmtId):
         for i in range(cmtId + 1, cmtId + cnt + 1):
             db.comment.update_one({'reviewId': reviewId, "cmtId": i}, {'&set': {"cmtId": i - 1}})
 
-    return jsonify({'msg': '삭제 완료'})
+    return jsonify({'msg': '삭제가 완료되었습니다.'})
 
 
 # @app.route('/<int:reviewId>/edited', methods=['POST'])
