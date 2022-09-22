@@ -3,7 +3,7 @@ import hashlib
 import jwt
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 import requests
-import datetime
+import datetime, time
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
 
@@ -133,6 +133,32 @@ def getAllrestaurant():
 #     db.michelin.drop()
 #     return jsonify({'msg': 'remove success!'})
 
+@app.route('/mypage', methods=['GET'])
+def getMypage():
+    return render_template('mypage.html')
+
+@app.route('/mypage/getComment', methods=['GET'])
+def getMyComment():
+    token_receive = request.cookies.get('mtoken')
+    print('getMypage.token_receive > ', token_receive)
+
+    if (token_receive is not None):
+        try:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.user.find_one({"id": payload["id"]})
+
+            comments = list(db.comment.find({'userId': user_info['id']}, {'_id': False}))
+            print(comments)
+
+            return jsonify(status='success', comments=comments)
+        except jwt.ExpiredSignatureError:
+            return redirect(url_for("getLogin", msg="로그인 시간이 만료되었습니다."))
+        except jwt.exceptions.DecodeError:
+            return redirect(url_for("getLogin", msg="로그인 정보가 존재하지 않습니다."))
+
+    print('is fail?')
+    return jsonify(status='fail')
+
 @app.route('/<int:reviewId>')
 def getDetailComment(reviewId):
     detail = db.michelin.find_one({'reviewId': reviewId})
@@ -158,8 +184,10 @@ def postComment(reviewId):
         'reviewId': reviewId,
         'cmtId': cmtId,
         'userId': userId,
-        'comment': comment_recieve
+        'comment': comment_recieve,
+        'date': datetime.datetime.utcnow()
     }
+    print(datetime.datetime.utcnow())
     db.comment.insert_one(doc)
     return jsonify({'msg': 'posted!'})
 
