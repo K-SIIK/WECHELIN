@@ -179,7 +179,23 @@ def getDetailComment(reviewId):
     detail = db.michelin.find_one({'reviewId': reviewId})
     comment_list = list(db.comment.find({'reviewId': reviewId}, {'_id': False}))
 
-    return render_template('detail.html', detail=detail, comment_list=comment_list)
+
+    token_recvieve = request.cookies.get('mtoken')
+
+    userId = '비회원'
+
+    if (token_recvieve is not None):
+        try:
+            paylode = jwt.decode(token_recvieve,SECRET_KEY)
+            user_info = db.user.find_one({'id':paylode['id']})
+
+            userId = user_info['id']
+            return render_template('detail.html', detail=detail, comment_list=comment_list, userId=userId)
+        except jwt.ExpiredSignatureError:
+            return redirect(url_for('getLogin', msg='로그인 시간이 만료 되었습니다.'))
+        except jwt.exceptions.DecodeError:
+            return redirect(url_for('getLogin', msg='로그인 정보가 존재하지 않습니다.'))
+    return render_template('detail.html', detail=detail, comment_list=comment_list, userId=userId)
 
 
 @app.route('/<int:reviewId>/post', methods=['POST'])
@@ -212,13 +228,12 @@ def deleteComment(reviewId, cmtId):
     # cmtId : 댓글 번호
     db.comment.delete_one({'reviewId': reviewId, 'cmtId': cmtId})
 
-    delete_info = list(db.comment.find({'reviewId': reviewId, 'cmtId': {'&gt': cmtId}}))
+    delete_info = list(db.comment.find({'reviewId': reviewId, 'cmtId': {'$gt': cmtId}}))
     cnt = len(delete_info)
 
     if cnt != 0:
         for i in range(cmtId + 1, cmtId + cnt + 1):
-            db.comment.update_one({'reviewId': reviewId, "cmtId": i}, {'&set': {"cmtId": i - 1}})
-
+            db.comment.update_one({'reviewId': reviewId, "cmtId": i}, {'$set': {"cmtId": i - 1}})
     return jsonify({'msg': '삭제가 완료되었습니다.'})
 
 
@@ -226,10 +241,9 @@ def deleteComment(reviewId, cmtId):
 # def editedComment(reviewId):
 
 
-@app.route('/<int:reviewId>/edit', methods=['GET'])
-def editComment(reviewId):
-    num_recieve = int(requests.form['num_give'])
-    editData = db.comment.find_one({'reviewId': reviewId, 'num': num_recieve})
+@app.route('/<int:reviewId>/edit/<int:cmtId>', methods=['GET'])
+def editComment(reviewId, cmtId):
+    editData = db.comment.find_one({'reviewId': reviewId, 'cmtId' : cmtId})
     return jsonify({'editData': editData})
 
 

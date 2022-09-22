@@ -78,7 +78,7 @@
             <a href="/register">회원가입</a>
         {% else %}
             {#  마이페이지 / 로그아웃 미구현  #}
-            <p>{{userId}} 님 환영합니다</p>
+            <p>{{ userId }} 님 환영합니다</p>
             <a href="/mypage">마이페이지</a>
             <a href="/logout">로그아웃</a>
         {% endif %}
@@ -118,12 +118,12 @@
                     </div>
 
                     <div class="buttongroup">
-                        <button onclick="" type="button" id="edit">
+                        <button onclick="edit_comment({{ detail['reviewId'] }}, {{ comment['cmtId'] }})" type="button" id="edit">
                             ✂
                         </button>
                         <button onclick="delete_comment({{ detail['reviewId'] }},{{ comment['cmtId'] }})" type="button"
                                 id="delete">
-                            ✖
+                            ❌
                         </button>
                     </div>
                 </div>
@@ -175,6 +175,19 @@
         })
     }
 
+    function edit_comment(reviewId, cmtId) {
+        $.ajax({
+            type: 'GET',
+            url: `/${reviewId}/delete/${cmtId}`,
+            data: {},
+            success: function (response) {
+                alert('hi')
+                let editData = response['editData']
+                $('#comment').text(editData['comment'])
+                window.location.reload()
+            }
+        })
+    }
 
 </script>
 
