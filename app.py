@@ -7,8 +7,8 @@ import datetime, time
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
 
-# client = MongoClient('mongodb+srv://test:sparta@cluster0.j6ve73r.mongodb.net/Cluster0?retryWrites=true&w=majority')
-client = MongoClient('mongodb://test:test@localhost', 27017)
+client = MongoClient('mongodb+srv://test:sparta@cluster0.j6ve73r.mongodb.net/Cluster0?retryWrites=true&w=majority')
+# client = MongoClient('mongodb://test:test@localhost', 27017)
 db = client.dbsparta
 
 app = Flask(__name__)
@@ -209,15 +209,11 @@ def postComment(reviewId):
         paylode = jwt.decode(token_receive, SECRET_KEY)
         user_info = db.user.find_one({'id': paylode['id']})
         cmt = list(db.comment.find({}, {'_id': False}).sort('cmtId', -1).limit(1))
-
-        if(len(cmt) == 0):
-            cmt = 0
-        else:
-            cmt = cmt[0]['cmtId']
+        print(cmt[0]['cmtId'])
 
         doc = {
             'reviewId': reviewId,
-            'cmtId': cmt + 1,
+            'cmtId': cmt[0]['cmtId'] + 1,
             'userId': user_info['id'],
             'comment': comment_receive,
             'date': datetime.datetime.utcnow()
