@@ -63,7 +63,6 @@ def getLogin():
 def postLogin():
     id = request.form['id']
     pw = request.form['pw']
-
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
     findUser = db.user.find_one({'id': id, 'pw': pw_hash})
@@ -149,11 +148,11 @@ def postComment(reviewId):
     comment_list = list(db.comment.find({'reviewId': reviewId}))
     cmtId = len(comment_list) + 1
 
-    # token_recieve = request.cookies.get('mtoken')
-    # paylode = jwt.decode(token_recieve, SECRET_KEY, algorithms=['HS256'])
-    # user_info = db.user.find_one({'id': paylode['id']})
+    token_recieve = request.cookies.get('mtoken')
+    paylode = jwt.decode(token_recieve, SECRET_KEY, algorithms=['HS256'])
+    user_info = db.user.find_one({'id': paylode['id']})
 
-    # userId = user_info['id']
+    userId = user_info['id']
 
     doc = {
         'reviewId': reviewId,
