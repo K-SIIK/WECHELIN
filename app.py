@@ -208,11 +208,15 @@ def postComment(reviewId):
         paylode = jwt.decode(token_receive, SECRET_KEY)
         user_info = db.user.find_one({'id': paylode['id']})
         cmt = list(db.comment.find({}, {'_id': False}).sort('cmtId', -1).limit(1))
-        print(cmt[0]['cmtId'])
+
+        if(len(cmt) == 0):
+            cmt = 0
+        else:
+            cmt = cmt[0]['cmtId']
 
         doc = {
             'reviewId': reviewId,
-            'cmtId': cmt[0]['cmtId'] + 1,
+            'cmtId': cmt + 1,
             'userId': user_info['id'],
             'comment': comment_receive,
             'date': datetime.datetime.utcnow()
