@@ -43,19 +43,18 @@ def home():
 
 @app.route('/login', methods=['GET'])
 def getLogin():
-
     msg = request.args.get('msg')
 
     access = "로그인 후 이용 가능합니다."
     timeout = "로그인 시간이 만료되었습니다."
     noExisted = "로그인 정보가 존재하지 않습니다."
 
-    if(msg != None):
-        if(timeout == msg):
-            return render_template('login.html', status=True, w = 't')
-        elif(noExisted == msg):
-            return render_template('login.html', status=True, w = 'n')
-        elif(access == msg):
+    if (msg != None):
+        if (timeout == msg):
+            return render_template('login.html', status=True, w='t')
+        elif (noExisted == msg):
+            return render_template('login.html', status=True, w='n')
+        elif (access == msg):
             return render_template('login.html', status=True, w='a')
 
     return render_template('login.html', status=False)
@@ -86,7 +85,6 @@ def postLogin():
 @app.route('/register', methods=['GET'])
 def getRegister():
     return render_template('register.html')
-
 
 
 @app.route('/register/chkDup', methods=['POST'])
@@ -148,6 +146,7 @@ def getMypage():
         except jwt.exceptions.DecodeError:
             return redirect(url_for("getLogin"))
 
+
 @app.route('/mypage/getComment', methods=['GET'])
 def getMyComment():
     token_receive = request.cookies.get('mtoken')
@@ -168,6 +167,7 @@ def getMyComment():
 
     return jsonify(status='fail')
 
+
 @app.route('/<int:reviewId>')
 def getDetailComment(reviewId):
     token_receive = request.cookies.get('mtoken')
@@ -178,15 +178,14 @@ def getDetailComment(reviewId):
     detail = db.michelin.find_one({'reviewId': reviewId})
     comment_list = list(db.comment.find({'reviewId': reviewId}, {'_id': False}))
 
-
     token_recvieve = request.cookies.get('mtoken')
 
     userId = '비회원'
 
     if (token_recvieve is not None):
         try:
-            paylode = jwt.decode(token_recvieve,SECRET_KEY)
-            user_info = db.user.find_one({'id':paylode['id']})
+            paylode = jwt.decode(token_recvieve, SECRET_KEY)
+            user_info = db.user.find_one({'id': paylode['id']})
 
             userId = user_info['id']
             return render_template('detail.html', detail=detail, comment_list=comment_list, userId=userId)
@@ -236,14 +235,17 @@ def deleteComment(reviewId, cmtId):
     return jsonify({'msg': '삭제가 완료 되었습니다.'})
 
 
-# @app.route('/<int:reviewId>/edited', methods=['POST'])
-# def editedComment(reviewId):
-
-
 @app.route('/<int:reviewId>/edit/<int:cmtId>', methods=['GET'])
 def editComment(reviewId, cmtId):
-    editData = db.comment.find_one({'reviewId': reviewId, 'cmtId' : cmtId})
+    editData = db.comment.find_one({'reviewId': reviewId, 'cmtId': cmtId}, {'_id': False})
     return jsonify(editData)
+
+
+@app.route('/<int:reviewId>/resave/<int:cmtId>', methods=['POST'])
+def editedComment(reviewId, cmtId):
+    comment_recieve = request.form['comment_give']
+    db.comment.update_one({'reviewId': reviewId, 'cmtId': cmtId}, {'$set': {'comment': comment_recieve}})
+    return jsonify({'msg': '수정 완료'})
 
 
 if __name__ == '__main__':
