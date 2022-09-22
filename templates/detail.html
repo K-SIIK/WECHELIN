@@ -17,25 +17,15 @@
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-content: space-evenly;
+            justify-content: space-around;
 
         }
 
-        .header > a, p {
+        .header > p,a {
             color: white;
+            font-weight: bolder;
         }
 
-        .header > p {
-            margin: 0px;
-        }
-
-
-        .image > img {
-            width: 60%;
-            display: block;
-            margin: auto;
-            margin-bottom: 50px;
-        }
 
 
         header {
@@ -45,12 +35,15 @@
 
         .contents {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             margin-top: 50px;
         }
 
         .card {
             margin: auto;
+            margin-bottom: 30px;
             width: 500px;
 
             box-shadow: 1px 1px 1px #d9cfcf;
@@ -72,19 +65,25 @@
 
 </head>
 <body>
-<div class="header">
-    <img src="https://guide.michelin.com/assets/images/michelin-guide-logo-white.svg" width="237" height="42">
-    <a href="/">미슐랭 오피셜</a>
-    <a href="#">나만의 미슐랭</a>
-    <a>{{ userId }}님 환영합니다</a>
-    {% if userId %}
-        <a href="#">마이 페이지</a>
-        <a href="#">로그아웃</a>
-    {% else %}
-        <a href="/login">로그인</a>
-        <a href="/register">회원가입</a>
-    {% endif %}
-</div>
+    <div class="header">
+        <div class="logo">
+            <a href="/">
+            <img src="https://guide.michelin.com/assets/images/michelin-guide-logo-white.svg" width="237" height="42">
+            </a>
+        </div>
+        <div class="link">
+            {% if userId == "비회원" %}
+            <p>비회원 님 환영합니다</p>
+            <a href="/login">로그인</a>
+            <a href="/register">회원가입</a>
+        {% else %}
+            {#  마이페이지 / 로그아웃 미구현  #}
+            <p>{{userId}} 님 환영합니다</p>
+            <a href="/mypage">마이페이지</a>
+            <a href="/logout">로그아웃</a>
+        {% endif %}
+        </div>
+    </div>
 
 <div class="contents">
     <div class="card">

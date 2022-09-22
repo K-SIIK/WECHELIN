@@ -17,16 +17,12 @@
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-content: space-evenly;
+            justify-content: space-around;
 
         }
 
         .header > a, p {
             color: white;
-        }
-
-        .header > p {
-            margin: 0px;
         }
 
 
@@ -48,9 +44,6 @@
             box-shadow: 3px 3px 3px 3px #d9cfcf;
         }
 
-        header {
-            height: 300px;
-        }
 
         .card-text {
             font-size: 12px;
@@ -70,11 +63,14 @@
 </head>
 <body>
     <div class="header">
-        <img src="https://guide.michelin.com/assets/images/michelin-guide-logo-white.svg" width="237" height="42">
-        <a href="/">미슐랭 오피셜</a>
-        <a href="#">나만의 미슐랭</a>
-        {% if userId == "비회원" %}
-            <p >비회원 님 환영합니다</p>
+        <div class="logo">
+            <a href="/">
+            <img src="https://guide.michelin.com/assets/images/michelin-guide-logo-white.svg" width="237" height="42">
+            </a>
+        </div>
+        <div class="link">
+            {% if userId == "비회원" %}
+            <p>비회원 님 환영합니다</p>
             <a href="/login">로그인</a>
             <a href="/register">회원가입</a>
         {% else %}
@@ -83,6 +79,7 @@
             <a href="/mypage">마이페이지</a>
             <a href="/logout">로그아웃</a>
         {% endif %}
+        </div>
     </div>
 
 <div class="image">
